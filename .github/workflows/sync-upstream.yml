@@ -1,0 +1,19 @@
+name: Sync upstream (Tennis Abstract MCP)
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # 每周一 03:00 UTC 自动追上游
+  workflow_dispatch: {}    # 支持手动触发
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fast-forward from upstream
+        run: |
+          git remote add upstream https://github.com/JeffSackmann/tennis_MatchChartingProject.git
+          git fetch upstream master
+          git push origin upstream/master:master
