@@ -12,8 +12,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Fast-forward from upstream
+      - name: Merge upstream into fork master
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/JeffSackmann/tennis_MatchChartingProject.git
           git fetch upstream master
-          git push origin upstream/master:master
+          # merge 而非快进：fork 带有 workflow 提交（上游无），快进永远失败；
+          # 上游只动 CSV、fork 只有 workflow 文件，合并永远无冲突可全自动
+          git merge upstream/master --no-edit
+          git push origin master
